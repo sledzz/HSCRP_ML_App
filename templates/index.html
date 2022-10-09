@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Focal Model
+        </title>
+    </head>
+    <body>
+        <form method="POST" action ={{ url_for('predict') }}>
+                To calculate the probability you have high levels of high-sensitivty C-Reactive protein, you must enter your infomation below: 
+                <br><br>
+                Sex: <input type ="text" placeholder ="Enter Here" name ="Gender" required="required" ><br><br>
+                Age: <input type ="text" placeholder= "Enter Here" name= "Age" required="required" ><br><br>
+                BMI: <input type ="text" placeholder ="Enter Here" name ="BMI" placeholder = "Enter here" required="required" ><br><br>
+                Systolic blood pressure: <input type ="text" placeholder ="Enter Here" name="Systolic" required="required" ><br><br>
+                Diastolic blood pressure: <input type ="text" placeholder ="Enter Here" name="Diastolic" required="required" ><br><br>
+                Number of alcoholic beverages consumed per week: <input type ="text" placeholder ="Enter Here" name="Alcohol"required="required" ><br><br>
+                Average number of hours slept per night: <input type ="text" placeholder ="Enter Here" name="Sleep_hrs" required="required" ><br><br>
+                Time (in hour of day) you on average, go to bed: <input type ="text" placeholder ="Enter Here" name= "SleepTimeCat" required="required" ><br><br>
+                Time (in hour of day) you on average, wake up: <input type ="text" placeholder ="Enter Here" name="WakeUpCat" required="required" ><br><br>
+
+                <button type="submit">Predict</button>
+        </form>
+        <br>
+        {{ prediction_text }}
+    </body>
+</html>
