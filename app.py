@@ -9,10 +9,10 @@ scaler = joblib.load('scaler.save')
 model = keras.models.load_model('focal_model.h5', compile=False)
 
 def get_bmi(weight, height):
-    kg = weight*0.45359237
-    m = height*0.3048
+    kg = float(weight)*0.45359237
+    m = float(height)*0.3048
     return float(kg/(m**2))
-    
+
 def get_sleep_cat(hour):
     print(hour)
     if 9 <= hour <= 9.5: return 1
