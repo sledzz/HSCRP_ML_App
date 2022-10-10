@@ -26,14 +26,12 @@ def get_sex(sex):
     elif sex == 'Female': return 1
     else: return 'Please enter a valid sex: Male or Female'
 
-@app.route("/", methods=['GET'])
+@app.route("/")
 def home():
     return render_template('index.html')
 
 @app.route("/predict", methods=['POST'])
 def predict():
-    #if request.method == 'GET':
-    #   return render_template('index.html')
     
     raw_features  = request.form
     features = {
@@ -48,10 +46,10 @@ def predict():
         'WakeUpCat' : get_wakeup_cat(float(raw_features['WakeUpCat']))
         }
 
-    model = keras.models.load_model('/Users/ryan/Desktop/ResearchRepo/HSCRPmlResearch/venv/focal_model.h5', compile=False)
+    model = keras.models.load_model('/Users/ryan/Desktop/ResearchRepo/HSCRPmlResearch/focal_model.h5', compile=False)
     model.compile(optimizer=keras.optimizers.Adam(0.0005), loss=tfa.losses.SigmoidFocalCrossEntropy(alpha=0.675, gamma=4))
 
-    scaler = joblib.load('/Users/ryan/Desktop/ResearchRepo/HSCRPmlResearch/venv/scaler.save')
+    scaler = joblib.load('/Users/ryan/Desktop/ResearchRepo/HSCRPmlResearch/scaler.save')
 
     features_array = np.reshape(np.array(list(features.values())), (1, -1))
 
@@ -67,4 +65,4 @@ def predict():
         
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
