@@ -8,6 +8,11 @@ app = Flask(__name__)
 scaler = joblib.load('scaler.save')
 model = keras.models.load_model('focal_model.h5', compile=False)
 
+def get_bmi(weight, height):
+    kg = weight*0.45359237
+    m = height*0.3048
+    return float(kg/(m**2))
+    
 def get_sleep_cat(hour):
     print(hour)
     if 9 <= hour <= 9.5: return 1
@@ -39,7 +44,7 @@ def predict():
     features = {
         'Gender' : get_sex(raw_features['Gender']),
         'Age': float(raw_features['Age']),
-        'BMI' : float(raw_features['BMI']),
+        'BMI' : float(get_bmi(weight=raw_features['Weight'], height =raw_features['Height'])),
         'Systolic': float(raw_features['Systolic']),
         'Diastolic' : float(raw_features['Diastolic']),
         'Alcohol': float(raw_features['Alcohol']),
