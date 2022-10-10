@@ -5,6 +5,8 @@ import tensorflow_addons as tfa
 import joblib
 
 app = Flask(__name__)
+scaler = joblib.load('/Users/ryan/Desktop/ResearchRepo/HSCRPmlResearch/scaler.save')
+model = keras.models.load_model('/Users/ryan/Desktop/ResearchRepo/HSCRPmlResearch/focal_model.h5', compile=False)
 
 def get_sleep_cat(hour):
     print(hour)
@@ -46,10 +48,7 @@ def predict():
         'WakeUpCat' : get_wakeup_cat(float(raw_features['WakeUpCat']))
         }
 
-    model = keras.models.load_model('/Users/ryan/Desktop/ResearchRepo/HSCRPmlResearch/focal_model.h5', compile=False)
     model.compile(optimizer=keras.optimizers.Adam(0.0005), loss=tfa.losses.SigmoidFocalCrossEntropy(alpha=0.675, gamma=4))
-
-    scaler = joblib.load('/Users/ryan/Desktop/ResearchRepo/HSCRPmlResearch/scaler.save')
 
     features_array = np.reshape(np.array(list(features.values())), (1, -1))
 
