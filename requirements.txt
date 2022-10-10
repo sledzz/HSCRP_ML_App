@@ -8,6 +8,7 @@ joblib
 keras
 numpy
 six==1.15.0
+sklearn
 tensorflow
 tensorflow_addons
 virtualenv==20.0.30
