@@ -1,8 +1,13 @@
 appdirs==1.4.4
 distlib==0.3.1
 filelock==3.0.12
+flask
 gunicorn==20.1.0
 importlib-metadata==1.7.0
+joblib
+keras
+numpy
 six==1.15.0
+tensorflow_addons
 virtualenv==20.0.30
 zipp==3.1.0
