@@ -26,7 +26,7 @@ def get_sex(sex):
     elif sex == 'Female': return 1
     else: return 'Please enter a valid sex: Male or Female'
 
-@app.route("/")
+@app.route("/", methods=['GET'])
 def home():
     return render_template('index.html')
 
