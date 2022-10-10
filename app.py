@@ -10,7 +10,7 @@ model = keras.models.load_model('focal_model.h5', compile=False)
 
 def get_bmi(weight, height):
     kg = float(weight)*0.45359237
-    m = float(height)*0.3048
+    m = float(height)*0.0254
     return float(kg/(m**2))
 
 def get_sleep_cat(hour):
