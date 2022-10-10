@@ -5,8 +5,8 @@ import tensorflow_addons as tfa
 import joblib
 
 app = Flask(__name__)
-scaler = joblib.load('app/scaler.save')
-model = keras.models.load_model('app/focal_model.h5', compile=False)
+scaler = joblib.load('scaler.save')
+model = keras.models.load_model('focal_model.h5', compile=False)
 
 def get_sleep_cat(hour):
     print(hour)
