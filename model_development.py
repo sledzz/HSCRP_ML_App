@@ -23,15 +23,15 @@ import tensorflow.keras.backend as K
 from sklearn import metrics
 from sklearn.metrics import auc
 import random 
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import RandomForestClassifier,GradientBoostingClassifier, GradientBoostingRegressor
 import joblib
 
-def preprocess():
-    data= pd.read_csv('/Users/ryan/Desktop/ResearchRepo/HSCRPmlResearch/preprocessed_data.csv').drop(columns=['Unnamed: 0','Waist_C', 'Carb_diet'])
-    y = data['HSCRP_cat'].replace({'low': 0, 'high': 1})
-    data['Gender'] = data['Gender'].replace({1:0,2:1})
-    x = data.drop(columns=['HSCRP_cat', 'HSCRP'])
+def preprocess(file_path, x_cols , y_cols):
+    data= pd.read_csv(file_path)
+    y = data[y_cols].replace({'low': 0, 'high': 1})
+    if ('Gender' in x_cols) or ('Sex' in x_cols):
+        data['Gender'] = data['Gender'].replace({1:0,2:1})
+    x = data[x_cols]
     return y, x
 
 class instantiate_model:
@@ -141,13 +141,14 @@ class fit_model:
         return trained_model
 
     def test_model(self, trained_model, x_test):
+        print(f"Testing model: {trained_model}")
 
         if "sklearn" in "{}".format(type(trained_model)):
             predicted = (trained_model.predict(x_test)).astype("int32")
             predicted_prob = (trained_model.predict_proba(x_test)[:,1]).astype("float")
         elif "keras" in "{}".format(type(trained_model)):
             predicted = (trained_model.predict(x_test) > 0.5).astype("int32")
-            predicted_prob = (trained_model.predict(x_test).flatten()).astype("float")
+            predicted_prob = (trained_model.predict(x_test)).reshape(-1,1).astype("float")
 
         assert self.check_data(predicted)
         assert self.check_data(predicted_prob)
@@ -164,6 +165,10 @@ class model_selection:
         
         metric_cols = ['Model','PR AUC','Brier Score','F1 Score','Recall','Precision']
         metric_list= []
+        try:
+            y_train = y_train.reshape(-1,1)
+        except:
+            y_train = y_train
     
         skf = StratifiedKFold(n_splits= num_splits, shuffle=True, random_state=42)
 
@@ -225,7 +230,7 @@ def train_test_split_func(x, y, test_size: int =0.15):
     return X_train_tf, X_val_tf, X_test_tf, y_train_tf, y_val_tf, y_test_tf
 
 def iterative_impute(X_train, X_test, X_val=None):
-    iterative_imputer = IterativeImputer(estimator = BayesianRidge(),random_state=42,max_iter=50)
+    iterative_imputer = IterativeImputer(estimator = GradientBoostingRegressor(),random_state=42,max_iter=50)
     imputed_train = pd.DataFrame(iterative_imputer.fit_transform(X_train), columns=X_train.columns, index=X_train.index)
     imputed_test = pd.DataFrame(iterative_imputer.transform(X_test),columns=X_test.columns, index=X_test.index)
 
@@ -247,8 +252,9 @@ def scaler(train, train_index, test, test_index, val=None, val_index=None):
 
     return scaled_train, scaled_test
 
+
 def split_impute_scale_pipe(x, y, test_size:int =0.15):
     x_train, x_val, x_test, y_train, y_val, y_test = train_test_split_func(x, y, test_size)
     x_train_imp, x_test_imp, x_val_imp = iterative_impute(x_train, x_test, x_val)
     x_train_scaled, x_test_scaled, x_val_scaled = scaler(x_train_imp, y_train.index, x_test_imp, y_test.index, x_val_imp, y_val.index)
-    return x_train_scaled, x_val_scaled, x_test_scaled, y_train, y_val, y_test
+    return x_train_scaled, x_test_scaled, x_val_scaled , y_train, y_val, y_test
